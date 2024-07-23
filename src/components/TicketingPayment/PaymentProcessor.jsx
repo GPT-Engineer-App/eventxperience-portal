@@ -70,10 +70,10 @@ const PaymentProcessor = ({ amount, onSuccess, onCancel }) => {
 
   return (
     <div className="space-y-4">
-      <Button onClick={handlePayment} disabled={isProcessing}>
-        {isProcessing ? 'Processing...' : `Pay $${amount}`}
+      <Button onClick={handlePayment} disabled={isProcessing} className="w-full">
+        {isProcessing ? 'Processing...' : `Confirm Payment of $${amount}`}
       </Button>
-      <Button variant="outline" onClick={handleRefund}>
+      <Button variant="outline" onClick={handleRefund} className="w-full">
         Request Refund
       </Button>
     </div>

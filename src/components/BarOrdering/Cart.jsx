@@ -2,9 +2,19 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 
 const Cart = ({ cart, removeFromCart, updateQuantity, onCheckout }) => {
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const { toast } = useToast();
+
+  const handleCheckout = () => {
+    onCheckout();
+    toast({
+      title: "Proceeding to Checkout",
+      description: "You're being redirected to the payment page.",
+    });
+  };
 
   return (
     <Card className="w-full">
@@ -38,7 +48,7 @@ const Cart = ({ cart, removeFromCart, updateQuantity, onCheckout }) => {
       </CardContent>
       <CardFooter className="flex justify-between">
         <span className="font-bold">Total: ${total.toFixed(2)}</span>
-        <Button onClick={onCheckout} disabled={cart.length === 0}>
+        <Button onClick={handleCheckout} disabled={cart.length === 0}>
           Checkout
         </Button>
       </CardFooter>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,7 +98,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
         )}
       </CardContent>
       <CardFooter>
-        <Button onClick={() => onAddToCart(item)}>Add to Cart</Button>
+        <Button onClick={() => onAddToCart(item)} className="w-full">Add to Cart</Button>
       </CardFooter>
     </Card>
   );
