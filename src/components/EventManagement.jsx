@@ -2,21 +2,30 @@ import React, { useState } from 'react';
 import EventForm from './EventForm';
 import { Button } from '@/components/ui/button';
 import { useEvents, useAddEvent, useUpdateEvent } from '@/integrations/supabase';
+import { useToast } from "@/components/ui/use-toast";
 
 const EventManagement = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { data: events, isLoading, isError } = useEvents();
   const addEvent = useAddEvent();
   const updateEvent = useUpdateEvent();
+  const { toast } = useToast();
 
   const handleCreateEvent = (eventData) => {
     addEvent.mutate(eventData, {
       onSuccess: () => {
-        console.log('Event created successfully');
+        toast({
+          title: "Event created",
+          description: "Your event has been successfully created.",
+        });
         setSelectedEvent(null);
       },
       onError: (error) => {
-        console.error('Error creating event:', error);
+        toast({
+          title: "Error",
+          description: `Failed to create event: ${error.message}`,
+          variant: "destructive",
+        });
       },
     });
   };
@@ -24,11 +33,18 @@ const EventManagement = () => {
   const handleUpdateEvent = (eventData) => {
     updateEvent.mutate({ id: selectedEvent.id, ...eventData }, {
       onSuccess: () => {
-        console.log('Event updated successfully');
+        toast({
+          title: "Event updated",
+          description: "Your event has been successfully updated.",
+        });
         setSelectedEvent(null);
       },
       onError: (error) => {
-        console.error('Error updating event:', error);
+        toast({
+          title: "Error",
+          description: `Failed to update event: ${error.message}`,
+          variant: "destructive",
+        });
       },
     });
   };
