@@ -1,10 +1,11 @@
-import { Home, Calendar, Beer, Map, HelpCircle } from "lucide-react";
+import { Home, Calendar, Beer, Map, HelpCircle, Ticket } from "lucide-react";
 import Index from "./pages/Index.jsx";
 import EventManagement from "./components/EventManagement";
 import BarOrdering from "./components/BarOrdering";
 import VenueNavigation from "./components/VenueNavigation";
 import UserSupport from "./components/UserSupport";
 import SchedulingInterface from "./components/SchedulingInterface";
+import TicketingPayment from "./components/TicketingPayment";
 
 export const navItems = [
   {
@@ -42,5 +43,11 @@ export const navItems = [
     to: "/support",
     icon: <HelpCircle className="h-4 w-4" />,
     page: <UserSupport />,
+  },
+  {
+    title: "Ticketing & Payment",
+    to: "/ticketing",
+    icon: <Ticket className="h-4 w-4" />,
+    page: <TicketingPayment />,
   },
 ];
