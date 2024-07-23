@@ -1,4 +1,4 @@
-import { Home, Calendar, Beer, Map, HelpCircle, Ticket, Users } from "lucide-react";
+import { Home, Calendar, Beer, Map, HelpCircle, Ticket, Users, Bell } from "lucide-react";
 import Index from "./pages/Index.jsx";
 import EventManagement from "./components/EventManagement";
 import BarOrdering from "./components/BarOrdering";
@@ -7,6 +7,7 @@ import UserSupport from "./components/UserSupport";
 import SchedulingInterface from "./components/SchedulingInterface";
 import TicketingPayment from "./components/TicketingPayment";
 import AttendeeManagement from "./components/AttendeeManagement";
+import NotificationsReminders from "./components/NotificationsReminders";
 
 export const navItems = [
   {
@@ -56,5 +57,11 @@ export const navItems = [
     to: "/attendees",
     icon: <Users className="h-4 w-4" />,
     page: <AttendeeManagement />,
+  },
+  {
+    title: "Notifications & Reminders",
+    to: "/notifications",
+    icon: <Bell className="h-4 w-4" />,
+    page: <NotificationsReminders />,
   },
 ];
