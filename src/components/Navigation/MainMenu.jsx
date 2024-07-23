@@ -45,7 +45,7 @@ const MainMenu = () => {
                 <DropdownMenuContent>
                   {item.subItems.map((subItem) => (
                     <DropdownMenuItem key={subItem.title}>
-                      <Link to={subItem.path}>{subItem.title}</Link>
+                      <Link to={subItem.path} className="w-full">{subItem.title}</Link>
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
