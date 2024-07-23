@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -53,6 +54,7 @@ const EventForm = ({ event, onSubmit }) => {
   const [tags, setTags] = useState(event?.tags || []);
   const [newTag, setNewTag] = useState('');
   const [media, setMedia] = useState(event?.media || []);
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -66,8 +68,25 @@ const EventForm = ({ event, onSubmit }) => {
     },
   });
 
-  const handleSubmit = (data) => {
-    onSubmit({ ...data, tags, media });
+  const handleSubmit = async (data) => {
+    try {
+      await onSubmit({ ...data, tags, media });
+      toast({
+        title: "Event Saved",
+        description: "Your event has been successfully saved.",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save the event. Please try again.",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleAddTag = () => {

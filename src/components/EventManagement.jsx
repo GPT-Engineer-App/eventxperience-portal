@@ -11,42 +11,38 @@ const EventManagement = () => {
   const updateEvent = useUpdateEvent();
   const { toast } = useToast();
 
-  const handleCreateEvent = (eventData) => {
-    addEvent.mutate(eventData, {
-      onSuccess: () => {
-        toast({
-          title: "Event created",
-          description: "Your event has been successfully created.",
-        });
-        setSelectedEvent(null);
-      },
-      onError: (error) => {
-        toast({
-          title: "Error",
-          description: `Failed to create event: ${error.message}`,
-          variant: "destructive",
-        });
-      },
-    });
+  const handleCreateEvent = async (eventData) => {
+    try {
+      await addEvent.mutateAsync(eventData);
+      toast({
+        title: "Event created",
+        description: "Your event has been successfully created.",
+      });
+      setSelectedEvent(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to create event: ${error.message}`,
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleUpdateEvent = (eventData) => {
-    updateEvent.mutate({ id: selectedEvent.id, ...eventData }, {
-      onSuccess: () => {
-        toast({
-          title: "Event updated",
-          description: "Your event has been successfully updated.",
-        });
-        setSelectedEvent(null);
-      },
-      onError: (error) => {
-        toast({
-          title: "Error",
-          description: `Failed to update event: ${error.message}`,
-          variant: "destructive",
-        });
-      },
-    });
+  const handleUpdateEvent = async (eventData) => {
+    try {
+      await updateEvent.mutateAsync({ id: selectedEvent.id, ...eventData });
+      toast({
+        title: "Event updated",
+        description: "Your event has been successfully updated.",
+      });
+      setSelectedEvent(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to update event: ${error.message}`,
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) return <div>Loading events...</div>;
