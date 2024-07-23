@@ -1,40 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const DigitalMenuDisplay = () => {
+const DigitalMenuDisplay = ({ menuItems }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
 
-  const { data: menuItems, isLoading, error } = useQuery({
-    queryKey: ['menuItems'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('menu_items')
-        .select('*');
-      if (error) throw new Error(error.message);
-      return data;
-    },
-  });
+  const categories = ['All', ...new Set(menuItems.map(item => item.category))];
 
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categories')
-        .select('*');
-      if (error) throw new Error(error.message);
-      return data;
-    },
-  });
-
-  const filteredItems = menuItems?.filter(item => {
+  const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           item.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = activeCategory === 'All' || item.category === activeCategory;
@@ -49,12 +27,8 @@ const DigitalMenuDisplay = () => {
     );
   };
 
-  if (isLoading) return <div>Loading menu...</div>;
-  if (error) return <div>Error loading menu: {error.message}</div>;
-
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Digital Menu</h2>
       <Input
         type="text"
         placeholder="Search menu items..."
@@ -77,26 +51,20 @@ const DigitalMenuDisplay = () => {
       </div>
       <Tabs value={activeCategory} onValueChange={setActiveCategory}>
         <TabsList>
-          <TabsTrigger value="All">All</TabsTrigger>
-          {categories?.map(category => (
-            <TabsTrigger key={category.id} value={category.name}>
-              {category.name}
+          {categories.map(category => (
+            <TabsTrigger key={category} value={category}>
+              {category}
             </TabsTrigger>
           ))}
         </TabsList>
-        <TabsContent value="All">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredItems?.map(item => (
-              <MenuItemCard key={item.id} item={item} />
-            ))}
-          </div>
-        </TabsContent>
-        {categories?.map(category => (
-          <TabsContent key={category.id} value={category.name}>
+        {categories.map(category => (
+          <TabsContent key={category} value={category}>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredItems?.filter(item => item.category === category.name).map(item => (
-                <MenuItemCard key={item.id} item={item} />
-              ))}
+              {filteredItems
+                .filter(item => category === 'All' || item.category === category)
+                .map(item => (
+                  <MenuItemCard key={item.id} item={item} />
+                ))}
             </div>
           </TabsContent>
         ))}

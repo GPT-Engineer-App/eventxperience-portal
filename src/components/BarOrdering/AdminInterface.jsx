@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 
-const AdminInterface = () => {
+const AdminInterface = ({ menuItems }) => {
   const [newItem, setNewItem] = useState({
     name: '',
     description: '',
@@ -19,15 +19,6 @@ const AdminInterface = () => {
   });
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
-  const { data: categories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('categories').select('*');
-      if (error) throw new Error(error.message);
-      return data;
-    },
-  });
 
   const addItemMutation = useMutation({
     mutationFn: async (newItem) => {
@@ -105,9 +96,9 @@ const AdminInterface = () => {
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
-            {categories?.map(category => (
-              <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
-            ))}
+            <SelectItem value="Drinks">Drinks</SelectItem>
+            <SelectItem value="Food">Food</SelectItem>
+            <SelectItem value="Snacks">Snacks</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex items-center space-x-2">
