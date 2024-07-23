@@ -3,6 +3,7 @@ import EventForm from './EventForm';
 import { Button } from '@/components/ui/button';
 import { useEvents, useAddEvent, useUpdateEvent } from '@/integrations/supabase';
 import { useToast } from "@/components/ui/use-toast";
+import LoadingSpinner from './LoadingSpinner';
 
 const EventManagement = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -45,7 +46,7 @@ const EventManagement = () => {
     }
   };
 
-  if (isLoading) return <div>Loading events...</div>;
+  if (isLoading) return <LoadingSpinner />;
   if (isError) return <div>Error loading events</div>;
 
   return (
@@ -66,17 +67,19 @@ const EventManagement = () => {
         </div>
       ) : (
         <div>
-          <Button onClick={() => setSelectedEvent({})}>Create New Event</Button>
+          <Button onClick={() => setSelectedEvent({})} className="mb-4">Create New Event</Button>
           <h3 className="text-xl font-semibold mt-4 mb-2">Existing Events</h3>
-          {events.map((event) => (
-            <div key={event.id} className="border p-2 mb-2 rounded">
-              <h4 className="font-semibold">{event.name}</h4>
-              <p>{event.description}</p>
-              <Button onClick={() => setSelectedEvent(event)} className="mt-2">
-                Edit
-              </Button>
-            </div>
-          ))}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {events.map((event) => (
+              <div key={event.id} className="border p-4 rounded-lg shadow-sm">
+                <h4 className="font-semibold">{event.name}</h4>
+                <p className="text-sm text-gray-600 mb-2">{event.description}</p>
+                <Button onClick={() => setSelectedEvent(event)} className="w-full">
+                  Edit
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

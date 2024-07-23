@@ -239,6 +239,7 @@ const EventForm = ({ event, onSubmit }) => {
                   type="button"
                   onClick={() => handleRemoveTag(tag)}
                   className="ml-2 text-red-500 hover:text-red-700"
+                  aria-label={`Remove ${tag} tag`}
                 >
                   ×
                 </button>
@@ -250,6 +251,7 @@ const EventForm = ({ event, onSubmit }) => {
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
               placeholder="Add a tag"
+              aria-label="New tag"
             />
             <Button type="button" onClick={handleAddTag}>
               Add Tag
@@ -260,10 +262,10 @@ const EventForm = ({ event, onSubmit }) => {
         <FormItem>
           <FormLabel>Media Upload</FormLabel>
           <div className="flex items-center gap-2">
-            <Input type="file" multiple onChange={handleFileUpload} />
+            <Input type="file" multiple onChange={handleFileUpload} accept="image/*,video/*" />
             <Upload className="h-6 w-6" />
           </div>
-          <FormDescription>Upload images, videos, or documents for your event.</FormDescription>
+          <FormDescription>Upload images or videos for your event.</FormDescription>
           {media.length > 0 && (
             <div className="mt-2">
               <p>Uploaded files:</p>
