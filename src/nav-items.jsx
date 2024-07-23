@@ -4,6 +4,7 @@ import EventManagement from "./components/EventManagement";
 import BarOrdering from "./components/BarOrdering";
 import VenueNavigation from "./components/VenueNavigation";
 import UserSupport from "./components/UserSupport";
+import SchedulingInterface from "./components/SchedulingInterface";
 
 export const navItems = [
   {
@@ -17,6 +18,12 @@ export const navItems = [
     to: "/events",
     icon: <Calendar className="h-4 w-4" />,
     page: <EventManagement />,
+  },
+  {
+    title: "Scheduling",
+    to: "/scheduling",
+    icon: <Calendar className="h-4 w-4" />,
+    page: <SchedulingInterface />,
   },
   {
     title: "Bar Ordering",
