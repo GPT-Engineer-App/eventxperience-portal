@@ -18,12 +18,10 @@ const fromSupabase = async (query) => {
     return data;
 };
 
-// ... (previous code remains unchanged)
-
 // Events
 export const useEvents = () => useQuery({
     queryKey: ['events'],
-    queryFn: () => fromSupabase(supabase.from('events').select('*'))
+    queryFn: () => fromSupabase(supabase.from('events').select('*').order('start', { ascending: true }))
 });
 
 export const useAddEvent = () => {
@@ -49,5 +47,3 @@ export const useDeleteEvent = () => {
         onSuccess: () => queryClient.invalidateQueries(['events'])
     });
 };
-
-// ... (rest of the code remains unchanged)

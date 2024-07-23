@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -12,7 +12,18 @@ const localizer = momentLocalizer(moment);
 const SchedulingInterface = () => {
   const [view, setView] = useState('month');
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const { data: events, isLoading, isError } = useEvents();
+  const { data: eventsData, isLoading, isError } = useEvents();
+
+  const events = useMemo(() => {
+    if (!eventsData) return [];
+    return eventsData.map(event => ({
+      id: event.id,
+      title: event.name,
+      start: new Date(event.start),
+      end: new Date(event.end || event.start),
+      allDay: !event.end,
+    }));
+  }, [eventsData]);
 
   const handleViewChange = (newView) => {
     setView(newView);
