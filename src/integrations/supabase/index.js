@@ -21,7 +21,7 @@ const fromSupabase = async (query) => {
 // Events
 export const useEvents = () => useQuery({
     queryKey: ['events'],
-    queryFn: () => fromSupabase(supabase.from('events').select('*').order('start', { ascending: true }))
+    queryFn: () => fromSupabase(supabase.from('events').select('*').order('date', { ascending: true }))
 });
 
 export const useAddEvent = () => {
@@ -47,3 +47,5 @@ export const useDeleteEvent = () => {
         onSuccess: () => queryClient.invalidateQueries(['events'])
     });
 };
+
+// Add other table hooks here...
