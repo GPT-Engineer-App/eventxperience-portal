@@ -31,6 +31,10 @@ const BarOrdering = () => {
 
   const removeFromCart = (itemId) => {
     setCart(prevCart => prevCart.filter(item => item.id !== itemId));
+    toast({
+      title: "Removed from Cart",
+      description: "Item has been removed from your cart.",
+    });
   };
 
   const updateQuantity = (itemId, newQuantity) => {
@@ -43,10 +47,18 @@ const BarOrdering = () => {
 
   const clearCart = () => {
     setCart([]);
+    toast({
+      title: "Cart Cleared",
+      description: "All items have been removed from your cart.",
+    });
   };
 
   const handleCheckout = () => {
     setActiveTab("payment");
+    toast({
+      title: "Proceeding to Checkout",
+      description: "You're being redirected to the payment page.",
+    });
   };
 
   return (
