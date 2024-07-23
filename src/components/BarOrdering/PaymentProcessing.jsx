@@ -15,17 +15,20 @@ import { supabase } from '@/lib/supabase';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
-const PaymentProcessing = ({ total, onPaymentComplete }) => {
+const PaymentProcessing = ({ cart, clearCart }) => {
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [splitPayment, setSplitPayment] = useState(false);
-  const [splitAmount, setSplitAmount] = useState(0);
   const { toast } = useToast();
+
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   const handlePayment = async () => {
     try {
       const stripe = await stripePromise;
       const { error } = await stripe.redirectToCheckout({
-        lineItems: [{ price: 'price_1234', quantity: 1 }],
+        lineItems: cart.map(item => ({
+          price: item.stripe_price_id, // Assuming you have this field in your item data
+          quantity: item.quantity,
+        })),
         mode: 'payment',
         successUrl: window.location.origin + '/success',
         cancelUrl: window.location.origin + '/cancel',
@@ -40,7 +43,11 @@ const PaymentProcessing = ({ total, onPaymentComplete }) => {
         { amount: total, payment_method: paymentMethod, status: 'completed' }
       ]);
 
-      onPaymentComplete();
+      clearCart();
+      toast({
+        title: "Payment Successful",
+        description: "Your order has been placed successfully.",
+      });
     } catch (error) {
       toast({
         title: "Payment Error",
@@ -50,38 +57,9 @@ const PaymentProcessing = ({ total, onPaymentComplete }) => {
     }
   };
 
-  const handleSplitPayment = async () => {
-    // Implement split payment logic here
-    toast({
-      title: "Split Payment",
-      description: "Split payment functionality is not yet implemented.",
-    });
-  };
-
-  const handleRefund = async () => {
-    try {
-      // In a real application, you would integrate with your payment provider's refund API
-      // For this example, we'll just log the refund request
-      await supabase.from('refunds').insert([
-        { amount: total, reason: 'Customer request' }
-      ]);
-
-      toast({
-        title: "Refund Requested",
-        description: "Your refund request has been submitted for processing.",
-      });
-    } catch (error) {
-      toast({
-        title: "Refund Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
   return (
-    <div className="p-4">
-      <h3 className="text-xl font-semibold mb-4">Payment Processing</h3>
+    <div className="space-y-4">
+      <h3 className="text-lg font-semibold">Payment Processing</h3>
       <div className="mb-4">
         <Label htmlFor="paymentMethod">Payment Method</Label>
         <Select value={paymentMethod} onValueChange={setPaymentMethod}>
@@ -97,36 +75,22 @@ const PaymentProcessing = ({ total, onPaymentComplete }) => {
         </Select>
       </div>
       <div className="mb-4">
-        <Label htmlFor="splitPayment">Split Payment</Label>
-        <Input
-          id="splitPayment"
-          type="checkbox"
-          checked={splitPayment}
-          onChange={(e) => setSplitPayment(e.target.checked)}
-        />
-      </div>
-      {splitPayment && (
-        <div className="mb-4">
-          <Label htmlFor="splitAmount">Split Amount</Label>
-          <Input
-            id="splitAmount"
-            type="number"
-            value={splitAmount}
-            onChange={(e) => setSplitAmount(parseFloat(e.target.value))}
-          />
+        <Label>Order Summary</Label>
+        <ul className="mt-2">
+          {cart.map((item) => (
+            <li key={item.id} className="flex justify-between">
+              <span>{item.name} x {item.quantity}</span>
+              <span>${(item.price * item.quantity).toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-2 font-bold">
+          Total: ${total.toFixed(2)}
         </div>
-      )}
-      <p className="mb-4">Total: ${total}</p>
-      {splitPayment ? (
-        <Button onClick={handleSplitPayment}>Process Split Payment</Button>
-      ) : (
-        <Button onClick={handlePayment}>Process Payment</Button>
-      )}
-      <Button onClick={handleRefund} className="mt-4" variant="outline">Request Refund</Button>
-      <div className="mt-4">
-        <h4 className="font-semibold">Refund Policy</h4>
-        <p>Refunds can be requested within 24 hours of purchase. Processing time may take up to 5-7 business days.</p>
       </div>
+      <Button onClick={handlePayment} disabled={!paymentMethod || cart.length === 0}>
+        Process Payment
+      </Button>
     </div>
   );
 };

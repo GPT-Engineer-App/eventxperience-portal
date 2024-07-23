@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/components/ui/use-toast";
 
-const DigitalMenuDisplay = ({ menuItems }) => {
+const DigitalMenuDisplay = ({ menuItems, addToCart }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
+  const { toast } = useToast();
 
   const categories = ['All', ...new Set(menuItems.map(item => item.category))];
 
@@ -25,6 +27,14 @@ const DigitalMenuDisplay = ({ menuItems }) => {
     setActiveFilters(prev => 
       prev.includes(filter) ? prev.filter(f => f !== filter) : [...prev, filter]
     );
+  };
+
+  const handleAddToCart = (item) => {
+    addToCart(item);
+    toast({
+      title: "Added to Cart",
+      description: `${item.name} has been added to your cart.`,
+    });
   };
 
   return (
@@ -63,7 +73,7 @@ const DigitalMenuDisplay = ({ menuItems }) => {
               {filteredItems
                 .filter(item => category === 'All' || item.category === category)
                 .map(item => (
-                  <MenuItemCard key={item.id} item={item} />
+                  <MenuItemCard key={item.id} item={item} onAddToCart={handleAddToCart} />
                 ))}
             </div>
           </TabsContent>
@@ -73,7 +83,7 @@ const DigitalMenuDisplay = ({ menuItems }) => {
   );
 };
 
-const MenuItemCard = ({ item }) => {
+const MenuItemCard = ({ item, onAddToCart }) => {
   return (
     <Card>
       <CardHeader>
@@ -88,7 +98,7 @@ const MenuItemCard = ({ item }) => {
         )}
       </CardContent>
       <CardFooter>
-        <Button>Add to Order</Button>
+        <Button onClick={() => onAddToCart(item)}>Add to Cart</Button>
       </CardFooter>
     </Card>
   );
