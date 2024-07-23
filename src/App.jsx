@@ -4,24 +4,29 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
 import { navItems } from "./nav-items";
+import { AuthProvider } from './contexts/AuthContext';
+import LoginForm from './components/LoginForm';
 
 const queryClient = new QueryClient();
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              {navItems.map((item) => (
-                <Route key={item.to} path={item.to} element={item.page} />
-              ))}
-            </Route>
-          </Routes>
-        </Router>
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router>
+            <Routes>
+              <Route path="/login" element={<LoginForm />} />
+              <Route path="/" element={<Layout />}>
+                {navItems.map((item) => (
+                  <Route key={item.to} path={item.to} element={item.page} />
+                ))}
+              </Route>
+            </Routes>
+          </Router>
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };
